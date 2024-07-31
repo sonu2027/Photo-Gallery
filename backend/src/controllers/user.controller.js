@@ -76,17 +76,12 @@ const registerUser = async (req, res, next) => {
     .json(new ApiResponse(200, createdUser, "User registered Successfully"));
 };
 
-const loginUser = async (req, res, next) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
   console.log("req.body in login: ", req.body);
   try {
-    const users = await User.find();
+    const foundUser = await User.find({email});
 
-    console.log("user are : ", users);
-
-    const foundUser = users.filter(
-      (e) => e.email === email && e.password === password
-    );
 
     console.log("foundUser found is : ", foundUser);
 
@@ -95,7 +90,7 @@ const loginUser = async (req, res, next) => {
       // throw new ApiError(500, "User not found");
     }
 
-    return res.status(200).json({foundUser, message:"User logged in Successfully"});
+    res.status(200).json({foundUser, message:"User logged in Successfully"});
   } catch (error) {
     console.error("Error fetching users:", error);
     return []; // Return an empty array or handle the error as needed
