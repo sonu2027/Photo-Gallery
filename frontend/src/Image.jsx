@@ -39,7 +39,7 @@ function Image() {
 
     const deleteDocument = async () => {
         try {
-            const res = await axios.delete(`http://localhost:5000/image/viewimage?param1=${encodeURIComponent('https://' + imageURL)}`);
+            const res = await axios.delete(`${import.meta.env.VITE_API_URL}/image/viewimage?param1=${encodeURIComponent('https://' + imageURL)}`);
             console.log("res from delete: ", res.data);
             console.log("prev for routing: ", prev, next);
             if (prev != "") {
@@ -54,7 +54,7 @@ function Image() {
     };
 
     useEffect(() => {
-        if(!userId){
+        if (!userId) {
             navigate("/")
         }
         fetchImage()
