@@ -4,14 +4,14 @@ import app from "./src/app.js";
 import { Image } from "./src/models/image.model.js";
 
 dotenv.config({
-  path: "./.env",
+  path: "/.env",
 });
 
 connectDB()
   .then(() => {
     app.get("/", (req, res) => {
       res.send(
-        `<h1>Server is running at http://localhost:${import.meta.env.PORT}</h1>`
+        `<h1>Server is running at http://localhost:${process.env.PORT}</h1>`
       );
     });
 
