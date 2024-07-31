@@ -3,12 +3,15 @@ import { Navigate } from 'react-router-dom'
 
 import { login } from './store/authSlice'
 
-import { useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Register from './Register'
 import { Link } from 'react-router-dom'
 import useDetailHook from './customHooks/userDetailHook'
 
 function Login() {
+
+  const [userEmail, setEmail] = useState("")
+  const [userPassword, setPassword] = useState("")
 
   const [gotoRegister, setGotoRegister] = useState(false)
 
@@ -28,15 +31,11 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-    console.log("even.target: ", event.target);
 
-    // Fetch the registration endpoint with form data
-    const formData = new FormData(event.target);
-    console.log("formData: ", event.target);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
         method: 'POST',
-        body: formData
+        body: JSON.stringify({ userEmail, userPassword })
       });
 
       console.log("response: ", response);
@@ -88,9 +87,9 @@ function Login() {
                     <h1 className='text-2xl sm:text-3xl mb-6'>Photo Gallery</h1>
                     <form onSubmit={handleSubmit} encType='multipart/form-data'>
 
-                      <input className='border-2 solid border-gray-300 rounded-sm w-64 sm:w-72 bg-gray-100 px-1 py-1 focus:outline-blue-500 mb-3' type="email" name="email" placeholder='Email' id="email" /><br />
+                      <input onChange={(e) => setEmail(e.target.password)} value={userEmail} className='border-2 solid border-gray-300 rounded-sm w-64 sm:w-72 bg-gray-100 px-1 py-1 focus:outline-blue-500 mb-3' type="email" name="email" placeholder='Email' id="email" /><br />
 
-                      <input className='border-2 solid border-gray-300 rounded-sm w-64 sm:w-72 bg-gray-100 px-1 py-1 focus:outline-blue-500' type="password" name="password" placeholder='Password' id="password" /><br /><br />
+                      <input onChange={(e) => setPassword(e.target.password)} value={userPassword} className='border-2 solid border-gray-300 rounded-sm w-64 sm:w-72 bg-gray-100 px-1 py-1 focus:outline-blue-500' type="password" name="password" placeholder='Password' id="password" /><br /><br />
 
                       {
                         loginStatus &&

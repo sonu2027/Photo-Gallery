@@ -20,7 +20,7 @@ router.route("/register").post(
   registerUser
 );
 
-router.route("/").post(upload.fields([]), loginUser);
+router.route("/").post(loginUser);
 
 router.route("/image").post(
   upload.fields([
