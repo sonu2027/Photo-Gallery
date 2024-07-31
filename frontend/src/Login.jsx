@@ -88,7 +88,7 @@ function Login() {
                 <div className='bg-gray-100 h-screen flex justify-center items-center'>
                   <div className='bg-white rounded-md border-2 border-solid border-slate-300 px-4 py-6'>
                     <h1 className='text-2xl sm:text-3xl mb-6'>Photo Gallery</h1>
-                    <form onSubmit={handleSubmit} encType='multipart/form-data'>
+                    <form>
 
                       <input onChange={(e) => setEmail(e.target.value)} value={userEmail} className='border-2 solid border-gray-300 rounded-sm w-64 sm:w-72 bg-gray-100 px-1 py-1 focus:outline-blue-500 mb-3' type="email" name="email" placeholder='Email' id="email" /><br />
 
@@ -101,7 +101,7 @@ function Login() {
                         </>
                       }
 
-                      <input className='rounded-sm text-white w-64 sm:w-72 bg-blue-500 px-1 py-1 hover:cursor-pointer' type="submit" value="Login" />
+                      <button className='rounded-sm text-white w-64 sm:w-72 bg-blue-500 px-1 py-1 hover:cursor-pointer' onClick={handleSubmit}>Login</button>
 
                     </form>
                     <br />
