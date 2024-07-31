@@ -34,7 +34,7 @@ function Login() {
     const formData = new FormData(event.target);
     console.log("formData: ", event.target);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
         method: 'POST',
         body: formData
       });
