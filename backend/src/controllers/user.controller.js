@@ -82,9 +82,13 @@ const loginUser = async (req, res, next) => {
   try {
     const users = await User.find();
 
+    console.log("user are : ", users);
+
     const foundUser = users.filter(
       (e) => e.email === email && e.password === password
     );
+
+    console.log("foundUser found is : ", foundUser);
 
     if (foundUser.length == 0) {
       return res.status(500).json(new ApiResponse(200, {}, "User not found"));
