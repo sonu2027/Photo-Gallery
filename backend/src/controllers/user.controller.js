@@ -95,9 +95,7 @@ const loginUser = async (req, res, next) => {
       // throw new ApiError(500, "User not found");
     }
 
-    return res
-      .status(201)
-      .json(new ApiResponse(200, foundUser, "User logged in Successfully"));
+    return res.status(200).json(foundUser, "User logged in Successfully");
   } catch (error) {
     console.error("Error fetching users:", error);
     return []; // Return an empty array or handle the error as needed
@@ -304,9 +302,9 @@ const deleteAccount = async (req, res) => {
       deleteFromCloudinary(e.image_public_id);
       await Image.deleteOne({ image_public_id: e.image_public_id });
     });
-    const user=await User.findOne({email})
+    const user = await User.findOne({ email });
     console.log("user:", user);
-    deleteFromCloudinary(user.image_public_id)
+    deleteFromCloudinary(user.image_public_id);
     const response = await User.deleteOne({ email });
     console.log("response", response);
     if (response) {
