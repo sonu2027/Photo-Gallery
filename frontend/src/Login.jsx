@@ -34,6 +34,9 @@ function Login() {
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
+        headers: {
+          "Content-Type": "application/json"
+        },
         method: 'POST',
         body: JSON.stringify({ userEmail, userPassword })
       });
