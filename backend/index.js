@@ -11,7 +11,7 @@ connectDB()
   .then(() => {
     app.get("/", (req, res) => {
       res.send(
-        `<h1>Server is running at http://localhost:${process.env.PORT}</h1>`
+        `<h1>Server is running at http://localhost:${import.meta.env.PORT}</h1>`
       );
     });
 
