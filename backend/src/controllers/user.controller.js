@@ -89,7 +89,7 @@ const loginUser = async (req, res) => {
       // throw new ApiError(500, "User not found");
     }
 
-    res.status(200).json({ foundUser, message: "User logged in Successfully" });
+    res.status(200).json({ data:foundUser, message: "User logged in Successfully" });
   } catch (error) {
     console.error("Error fetching users:", error);
     return []; // Return an empty array or handle the error as needed
