@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import connectDB from "./db/index.js";
-import app from "./app.js";
-import { Image } from "./models/image.model.js";
+import connectDB from "./src/db/index.js";
+import app from "./src/app.js";
+import { Image } from "./src/models/image.model.js";
 
 dotenv.config({
   path: "./.env",
