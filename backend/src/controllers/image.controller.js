@@ -13,16 +13,19 @@ const uploadImage = async (req, res, next) => {
   console.log("gghgh", ownerId);
   console.log("req.files........", req.files);
 
-  let imageLocalPath;
+  let imagePublicId;
+  let imageBuffer;
   if (
     req.files &&
     Array.isArray(req.files.image) &&
     req.files.image.length > 0
   ) {
-    imageLocalPath = req.files.image[0].path;
+    imagePublicId = `${Date.now()}_${req.files.image[0].originalname}`;
+    imageBuffer = req.files.image[0].buffer;
   }
-  console.log("imagelocalpath: ", imageLocalPath);
-  const response = await uploadOnCloudinary(imageLocalPath);
+  console.log("imagePublicId and imageBuffer: ", imagePublicId);
+
+  const response = await uploadOnCloudinary(imageBuffer, imagePublicId);
 
   console.log("Image: ", response);
 
@@ -57,7 +60,7 @@ const deleteImage = async (req, res) => {
     console.log("all iamge: ", all_image);
     let req_img = all_image.filter((e) => e.image == imageUrl);
     console.log("image_public_id: ", req_img);
-    req_img=req_img[0].image_public_id
+    req_img = req_img[0].image_public_id;
     console.log("req pub_id: ", req_img);
 
     // Delete image document from MongoDB
@@ -69,7 +72,7 @@ const deleteImage = async (req, res) => {
 
     // delete from cloudinary
     console.log("typeof req_img", typeof req_img);
-    deleteFromCloudinary(req_img)
+    deleteFromCloudinary(req_img);
 
     return res
       .status(201)
