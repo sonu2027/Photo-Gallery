@@ -32,6 +32,8 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
 
+    console.log("import.meta.env.VITE_API_URL: ", import.meta.env.VITE_API_URL);
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         headers: {
