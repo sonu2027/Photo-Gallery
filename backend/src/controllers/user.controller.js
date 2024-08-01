@@ -10,16 +10,6 @@ import fs from "fs";
 import { Image } from "../models/image.model.js";
 
 const registerUser = async (req, res, next) => {
-  // get user details from frontend
-  // validation - not empty
-  // check if user already exists: username, email
-  // check for images, check for avatar
-  // upload them to cloudinary, avatar
-  // create user object - create entry in db
-  // remove password and refresh token field from response
-  // check for user creation
-  // return res
-
   const { fullName, email, username, password } = req.body;
 
   console.log("req.body........", req.body);
@@ -35,22 +25,23 @@ const registerUser = async (req, res, next) => {
     $or: [{ username }, { email }],
   });
 
-  let imageLocalPath;
+  let imagePublicId;
+  let imageBuffer;
   if (
     req.files &&
     Array.isArray(req.files.image) &&
     req.files.image.length > 0
   ) {
-    imageLocalPath = req.files.image[0].path;
+    imagePublicId = `${Date.now()}_${req.files.image[0].originalname}`;
+    imageBuffer = req.files.image[0].buffer;
   }
-  console.log("imagelocalpath: ", imageLocalPath);
+  console.log("imagePublicId and imageBuffer: ", imagePublicId);
 
   if (existedUser) {
-    fs.unlinkSync(imageLocalPath);
     throw new ApiError(409, "User with email or username already exists");
   }
 
-  const image = await uploadOnCloudinary(imageLocalPath);
+  const image = await uploadOnCloudinary(imageBuffer, imagePublicId);
   console.log("Image: ", image);
 
   const user = await User.create({
@@ -61,9 +52,6 @@ const registerUser = async (req, res, next) => {
     image: image?.url || "",
     image_public_id: image?.public_id || "",
   });
-
-  // If you want that password don't go to response in frontend
-  // const createdUser = await User.findById(user._id).select("-password");
 
   const createdUser = await User.findById(user._id);
 
@@ -89,7 +77,9 @@ const loginUser = async (req, res) => {
       // throw new ApiError(500, "User not found");
     }
 
-    res.status(200).json({ data:foundUser, message: "User logged in Successfully" });
+    res
+      .status(200)
+      .json({ data: foundUser, message: "User logged in Successfully" });
   } catch (error) {
     console.error("Error fetching users:", error);
     return []; // Return an empty array or handle the error as needed
@@ -193,18 +183,19 @@ const updateProfile = async (req, res, next) => {
 
       console.log("req.files: ", req.files);
 
-      let imageLocalPath;
+      let imagePublicId;
+      let imageBuffer;
       if (
         req.files &&
         Array.isArray(req.files.image) &&
         req.files.image.length > 0
       ) {
-        imageLocalPath = req.files.image[0].path;
+        imagePublicId = `${Date.now()}_${req.files.image[0].originalname}`;
+        imageBuffer = req.files.image[0].buffer;
       }
-      console.log("imagelocalpath: ", imageLocalPath);
+      console.log("imagePublicId and imageBuffer: ", imagePublicId);
 
-      const image = await uploadOnCloudinary(imageLocalPath);
-
+      const image = await uploadOnCloudinary(imageBuffer, imagePublicId);
       console.log("Image: ", image);
 
       // delete previoud profile picture from cloudinary
