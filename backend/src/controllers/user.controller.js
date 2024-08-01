@@ -77,8 +77,8 @@ const registerUser = async (req, res, next) => {
 };
 
 const loginUser = async (req, res) => {
-  const { userEmail: email, userPassword: password } = req.body;
   console.log("req.body in login: ", req.body);
+  const { userEmail: email, userPassword: password } = req.body;
   try {
     const foundUser = await User.find({ email, password });
 

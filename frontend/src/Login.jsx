@@ -33,7 +33,7 @@ function Login() {
     event.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         headers: {
           "Content-Type": "application/json"
         },
