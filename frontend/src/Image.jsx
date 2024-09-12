@@ -119,11 +119,15 @@ function Image() {
         if (diffX > 50) {
             // Swipe Left
             setSwipeDirection("Left");
-            navigate(`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`)
+            if (next != "") {
+                navigate(`/home/image/${encodeURIComponent(next.slice(7, next.length))}`)
+            }
         } else if (diffX < -50) {
             // Swipe Right
             setSwipeDirection("Right");
-            navigate(`/home/image/${encodeURIComponent(next.slice(7, next.length))}`)
+            if (prev != "") {
+                navigate(`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`)
+            }
         } else {
             setSwipeDirection(null); // No significant swipe
         }
@@ -142,7 +146,7 @@ function Image() {
 
                 {
                     prev != "" && <Link to={`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`}>
-                        <IoMdArrowDropleft className='text-white text-4xl sm:text-5xl absolute left-1' />
+                        <IoMdArrowDropleft className='text-white text-4xl sm:text-5xl absolute left-1 hidden md:block' />
                     </Link>
                 }
 
@@ -150,36 +154,19 @@ function Image() {
                     <img className='w-64' onClick={() => handleShowPopup(showPopup)} src={`https://${imageURL}`} alt="Image" />
                 </div>
 
-                {/* {
-                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white relative h-10 bottom-10 flex justify-center items-center'>
-                        <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
-                    </div>
-                } */}
-
                 {
-                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-0 flex justify-center items-center'>
+                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-4 flex justify-center items-center'>
                         <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
                     </div>
                 }
 
                 {
                     next != "" && <Link to={`/home/image/${encodeURIComponent(next.slice(7, next.length))}`}>
-                        <IoMdArrowDropright className='text-white text-4xl sm:text-5xl absolute right-1' />
+                        <IoMdArrowDropright className='text-white text-4xl sm:text-5xl absolute right-1 hidden md:block' />
                     </Link>
                 }
 
             </div>
-
-            {/* <div
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                className="w-full h-screen bg-gray-200 flex items-center justify-center"
-            >
-                <div className="text-xl">
-                    {swipeDirection ? `Swiped ${swipeDirection}` : "Swipe Left or Right"}
-                </div>
-            </div> */}
         </div>
 
     )
