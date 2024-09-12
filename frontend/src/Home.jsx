@@ -3,6 +3,7 @@ import { login, logout } from './store/authSlice.js';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Navigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { RxCross1 } from "react-icons/rx";
 import { FaEdit } from "react-icons/fa";
@@ -15,17 +16,8 @@ import useDetailHook from './customHooks/userDetailHook.js';
 
 function Home() {
 
-    // window.addEventListener("click", (e)=>{
-    //     console.log(e);
-    //     console.log(window.innerWidth);
-    //     console.log(window.innerHeight);
-    // })
-
-    window.addEventListener("touchstart", (e) => {
-        console.log("events: ", e);
-    })
-
     const dispatch = useDispatch();
+    const navigate = useNavigate()
     const {
         status,
         userId,
@@ -111,8 +103,15 @@ function Home() {
     const [updatePPOption, setUpdatePPOption] = useState(false)
     const [PPuploadFailed, setPPuploadFailed] = useState(false)
 
-    const showUploadOption = () => {
+    const showUploadOption = (e) => {
+        e.stopPropagation()
         setUploadOption(!uploadOption)
+        if(uploadOption){
+            document.body.style.overflow = "scroll"
+        }
+        else{
+            document.body.style.overflow = "hidden"
+        }
     }
 
     const handleUpdateName = () => {
@@ -190,12 +189,22 @@ function Home() {
         }
     }
 
+    window.addEventListener("click", (e) => {
+        if (uploadOption) {
+            setUploadOption(false)
+        }
+        if (clickedUser) {
+            setClickedUser(false)
+        }
+        document.body.style.overflow = "scroll"
+    })
+
     return (
         <div className='bg-gray-100 pb-24'>
             {
                 status ?
                     <>
-                        <div className='m-2 absolute right-6 top-2 text-red-500 font-medium' >
+                        <div onClick={(e) => { e.stopPropagation() }} className='m-2 absolute right-6 top-2 text-red-500 font-medium' >
                             <img onClick={() => setClickedUser(!clickedUser)} className='h-8 w-8 hover:cursor-pointer rounded-full' src={userProfilePhoto} alt="" />
                         </div>
                         {clickedUser &&
@@ -266,7 +275,7 @@ function Home() {
 
             {
                 uploadOption &&
-                <div className='bg-white fixed top-1/3 right-1/2 translate-x-1/2 translate-y-1/2 rounded-md border-2 border-solid border-gray-300'>
+                <div onClick={(e) => { e.stopPropagation() }} className='bg-white fixed top-1/3 right-1/2 translate-x-1/2 translate-y-1/2 rounded-md border-2 border-solid border-gray-300'>
                     <div className='flex justify-end items-center'>
                         <RxCross1 onClick={showUploadOption} className='m-2 hover:cursor-pointer' />
                     </div>
@@ -277,8 +286,8 @@ function Home() {
                         }} type="file" name="image" id="" placeholder='Upload Files' /><br /><br />
                         {
                             loading ?
-                                <button className='bg-blue-500 rounded-sm text-white px-4 py-1' type="submit">
-                                    <div className='h-4 w-4 rounded-full border-solid border-2 border-white border-t-blue-900 animate-spin'></div>
+                                <button className='bg-blue-500 rounded-sm text-white px-4 py-2' type="submit">
+                                    <div className='h-6 w-6 rounded-full border-solid border-2 border-white border-t-blue-900 animate-spin'></div>
                                 </button>
                                 :
                                 <button className='bg-blue-500 rounded-sm text-white px-4 py-1' type="submit">Post</button>
@@ -294,7 +303,7 @@ function Home() {
 
                 <div className='mx-2 mt-8 mb-8 flex justify-between items-center'>
                     <div className=' text-2xl'>Photos</div>
-                    <button onClick={showUploadOption} className='text-white bg-blue-500 rounded-sm px-2 py-1'>Add photo/video</button>
+                    <button onClick={showUploadOption} className='text-white bg-blue-500 rounded-sm px-2 py-1'>Add photo</button>
                 </div>
 
                 <div className='flex justify-center items-start px-2 py-2'>
