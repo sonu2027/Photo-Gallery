@@ -119,9 +119,11 @@ function Image() {
         if (diffX > 50) {
             // Swipe Left
             setSwipeDirection("Left");
+            navigate(`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`)
         } else if (diffX < -50) {
             // Swipe Right
             setSwipeDirection("Right");
+            navigate(`/home/image/${encodeURIComponent(next.slice(7, next.length))}`)
         } else {
             setSwipeDirection(null); // No significant swipe
         }
