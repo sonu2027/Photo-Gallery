@@ -154,7 +154,7 @@ function Change() {
                             <EmailForm handleEmailChange={handleEmailChange} setInputValue={setInputValue} inputValue={inputValue} flag={flag} saving={saving} changes={changes} />
                         }
                         {
-                            change == "name" || change == "username" &&
+                            (change == "username" || change == "name") &&
                             <NameForm handleSubmit={handleSubmit} setInputValue={setInputValue} inputValue={inputValue} flag={flag} changes={changes} saving={saving} />
                         }
                     </div>

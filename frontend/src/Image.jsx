@@ -9,6 +9,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { TfiArrowLeft } from "react-icons/tfi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
+import { useRef } from 'react';
 
 function Image() {
     const { imageURL } = useParams()
@@ -97,9 +98,41 @@ function Image() {
 
     console.log("prev, next: ", prev, next);
 
+    const [swipeDirection, setSwipeDirection] = useState(null); // To store the swipe direction
+    const touchStartX = useRef(0); // To track the starting X position of the touch
+    const touchEndX = useRef(0);   // To track the ending X position of the touch
+
+    // Called when the user starts touching the screen
+    const handleTouchStart = (event) => {
+        touchStartX.current = event.touches[0].clientX; // Record the initial touch position
+    };
+
+    // Called as the user moves their finger on the screen
+    const handleTouchMove = (event) => {
+        touchEndX.current = event.touches[0].clientX; // Update as the finger moves
+    };
+
+    // Called when the user lifts their finger from the screen
+    const handleTouchEnd = () => {
+        const diffX = touchStartX.current - touchEndX.current;
+
+        if (diffX > 50) {
+            // Swipe Left
+            setSwipeDirection("Left");
+        } else if (diffX < -50) {
+            // Swipe Right
+            setSwipeDirection("Right");
+        } else {
+            setSwipeDirection(null); // No significant swipe
+        }
+    };
+
+
 
     return (
-        userId && <div className='bg-slate-900 pt-3'>
+        userId && <div onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd} className='bg-slate-900 pt-3'>
             <Link to="/home">
                 <TfiArrowLeft className='text-white text-2xl fixed top-3 left-3' />
             </Link>
@@ -113,12 +146,19 @@ function Image() {
 
                 <div className='flex flex-col justify-center items-center h-screen'>
                     <img className='w-64' onClick={() => handleShowPopup(showPopup)} src={`https://${imageURL}`} alt="Image" />
-                    {
-                        showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white relative h-10 bottom-10 flex justify-center items-center'>
-                            <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
-                        </div>
-                    }
                 </div>
+
+                {/* {
+                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white relative h-10 bottom-10 flex justify-center items-center'>
+                        <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
+                    </div>
+                } */}
+
+                {
+                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-0 flex justify-center items-center'>
+                        <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
+                    </div>
+                }
 
                 {
                     next != "" && <Link to={`/home/image/${encodeURIComponent(next.slice(7, next.length))}`}>
@@ -127,6 +167,17 @@ function Image() {
                 }
 
             </div>
+
+            {/* <div
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="w-full h-screen bg-gray-200 flex items-center justify-center"
+            >
+                <div className="text-xl">
+                    {swipeDirection ? `Swiped ${swipeDirection}` : "Swipe Left or Right"}
+                </div>
+            </div> */}
         </div>
 
     )

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { login, logout } from './store/authSlice.js';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Navigate } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,16 @@ import useDetailHook from './customHooks/userDetailHook.js';
 
 function Home() {
 
+    // window.addEventListener("click", (e)=>{
+    //     console.log(e);
+    //     console.log(window.innerWidth);
+    //     console.log(window.innerHeight);
+    // })
+
+    window.addEventListener("touchstart", (e) => {
+        console.log("events: ", e);
+    })
+
     const dispatch = useDispatch();
     const {
         status,
@@ -24,8 +34,8 @@ function Home() {
         username,
         email,
         password,
-      } = useDetailHook()
-    
+    } = useDetailHook()
+
     const [uploadImage, setUploadImage] = useState(false)
     const [uploadFailed, setUploadfailed] = useState(false)
 
@@ -36,6 +46,8 @@ function Home() {
     const [updateImage, setUpdateImage] = useState(false)
 
     const [clickedUser, setClickedUser] = useState(false)
+
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchImages() {
@@ -56,41 +68,43 @@ function Home() {
 
 
     const handleUpload = async (event) => {
-        event.preventDefault(); // Prevent the default form submission behavior
-        console.log("even.target: ", event.target);
+        event.preventDefault();
+        console.log("event: ", event);
 
-        // Fetch the registration endpoint with form data
-        const formData = new FormData(event.target);
-        formData.append('ownerId', userId);
-        console.log("formData: ", event.target);
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/image`, {
-                method: 'POST',
-                body: formData
-            });
+        if (event.target[0].value != "") {
+            setLoading(true)
+            const formData = new FormData(event.target);
+            formData.append('ownerId', userId);
+            console.log("formData: ", event.target);
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/image`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            console.log("response: ", response);
+                console.log("response: ", response);
 
-            if (response.ok) {
-                // Registration successful, handle response
-                const data = await response.json();
-                console.log('Images: ', data);
-                setUploadOption(false)
-                // Optionally, you can redirect the user to another page or show a success message here
-            } else {
-                setUploadfailed(true)
-                setTimeout(() => {
-                    setUploadfailed(false)
-                }, 3000)
-                // Handle errors
-                console.error('Registration failed:', response.statusText);
+                if (response.ok) {
+                    // Registration successful, handle response
+                    const data = await response.json();
+                    console.log('Images: ', data);
+                    setUploadOption(false)
+                    setLoading(false)
+                } else {
+                    setUploadfailed(true)
+                    setTimeout(() => {
+                        setUploadfailed(false)
+                    }, 3000)
+                    // Handle errors
+                    console.error('Registration failed:', response.statusText);
+                    // Optionally, you can show an error message to the user
+                }
+            } catch (error) {
+                console.error('Error occurred while registering:', error);
                 // Optionally, you can show an error message to the user
             }
-        } catch (error) {
-            console.error('Error occurred while registering:', error);
-            // Optionally, you can show an error message to the user
+            setUploadImage(!uploadImage)
         }
-        setUploadImage(!uploadImage)
     };
 
     const [uploadOption, setUploadOption] = useState(false)
@@ -257,8 +271,18 @@ function Home() {
                         <RxCross1 onClick={showUploadOption} className='m-2 hover:cursor-pointer' />
                     </div>
                     <form className='flex flex-col justify-center items-center px-4 pb-4 pt-2' onSubmit={handleUpload} encType='multipart/form-data'>
-                        <input type="file" name="image" id="" placeholder='Upload Files' /><br /><br />
-                        <button className='bg-blue-500 rounded-sm text-white px-4 py-1' type="submit">Post</button>
+                        <input onChange={(e) => {
+                            console.log("e:", e);
+
+                        }} type="file" name="image" id="" placeholder='Upload Files' /><br /><br />
+                        {
+                            loading ?
+                                <button className='bg-blue-500 rounded-sm text-white px-4 py-1' type="submit">
+                                    <div className='h-4 w-4 rounded-full border-solid border-2 border-white border-t-blue-900 animate-spin'></div>
+                                </button>
+                                :
+                                <button className='bg-blue-500 rounded-sm text-white px-4 py-1' type="submit">Post</button>
+                        }
                     </form>
                     {
                         uploadFailed && <div>Upload failed: Please try again</div>
@@ -278,8 +302,8 @@ function Home() {
                         {
                             imageData.map((e) =>
                                 <Link key={e} to={`/home/image/${encodeURIComponent(e.slice(7, e.length))}`}>
-                                    <div className='rounded-md border-gray-200 border-2 border-solid h-52 overflow-hidden flex justify-center items-start'>
-                                        <img className='' src={`${e}`} alt="img"
+                                    <div className='rounded-md border-gray-200 border-2 border-solid h-52'>
+                                        <img className='h-full w-full object-cover' src={`${e}`} alt="img"
                                         />
                                     </div>
                                 </Link>
