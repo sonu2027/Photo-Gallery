@@ -9,6 +9,7 @@ import Change from "./Change.jsx";
 import ForgotPassword from "./ForgotPassword.jsx";
 import ChangePassword from "./ChangePassword.jsx";
 import DeleteAccount from "./DeleteAccount.jsx";
+import Favorite from "./Favorite.jsx";
 
 function CustomRoute() {
   return (
@@ -22,6 +23,7 @@ function CustomRoute() {
       <Route path="/home/setting" element={<Setting />} />
       <Route path="/home/setting/:change" element={<Change />} />
       <Route path="/home/setting/accountdeleteion" element={<DeleteAccount />} />
+      <Route path="/home/favorite" element={<Favorite />} />
     </Routes>
   )
 }

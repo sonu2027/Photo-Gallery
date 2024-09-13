@@ -83,4 +83,33 @@ const deleteImage = async (req, res) => {
   }
 };
 
-export { uploadImage, deleteImage };
+const markedFav = async (req, res) => {
+  console.log("req.body: ", req.body);
+
+  try {
+    const image = await Image.findOne({ image: req.body.imgUrl });
+    const response = await Image.updateOne(
+      { image: req.body.imgUrl },
+      { favorite: !image.favorite }
+    );
+    console.log("response: ", response);
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error: ", error);
+  }
+};
+
+const getImageDtls = async (req, res) => {
+  console.log("req.body: ", req.body);
+
+  try {
+    const response = await Image.findOne({ image: req.body.imgUrl });
+    console.log("response: ", response);
+    res.status(200).json({ response });
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(500).json({ message: "not found image details" });
+  }
+};
+
+export { uploadImage, deleteImage, markedFav, getImageDtls };

@@ -4,7 +4,7 @@ import Album from './component/Album.jsx';
 import axios from 'axios';
 import useDetailHook from './customHooks/userDetailHook.js';
 
-function Home() {
+function Favorite() {
 
     const [imageData, setImageData] = useState([])
     const [uploadImage, setUploadImage] = useState(false)
@@ -25,7 +25,7 @@ function Home() {
             imagesData = imagesData.data
             let images = new Array()
             imagesData.map((e) => {
-                if (e.ownerId == userId) {
+                if (e.ownerId == userId && e.favorite==true) {
                     images.push(e.image)
                 }
             })
@@ -42,9 +42,9 @@ function Home() {
     return (
         <div className='bg-gray-100 pb-24'>
             <Header />
-            <Album album={"home"} imageData={imageData} setUploadImage={setUploadImage} uploadImage={uploadImage} />
+            <Album imageData={imageData} setUploadImage={setUploadImage} uploadImage={uploadImage} album={"favorite"}/>
         </div >
     )
 }
 
-export default Home
+export default Favorite

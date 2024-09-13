@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useEffect } from 'react';
-import { useParams } from 'react-router'
+import { useLoaderData, useParams } from 'react-router'
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -10,8 +10,19 @@ import { TfiArrowLeft } from "react-icons/tfi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { useRef } from 'react';
+import { MdOutlineFavorite } from "react-icons/md";
+import { markedFav } from './databasecall/markedFav.js';
+import { getImageDtls } from './databasecall/getImageDtls.js';
+import { useLocation } from 'react-router';
 
 function Image() {
+    const location = useLocation()
+    const queryParams = new URLSearchParams(location.search);
+
+    // Access individual query parameters
+    const album = queryParams.get('album');
+    console.log("a is: ", album);
+
     const { imageURL } = useParams()
     console.log('ImageURL: ', imageURL);
 
@@ -19,6 +30,7 @@ function Image() {
     const [next, setNext] = useState("")
 
     const [showPopup, setShowPopup] = useState(false)
+    const [imageDetails, setImageDetails] = useState({})
 
     const navigate = useNavigate()
 
@@ -28,7 +40,12 @@ function Image() {
         try {
             let response = await axios.get(`${import.meta.env.VITE_API_URL}/image`)
             response = response.data
-            response = response.filter((e) => e.ownerId === userId)
+            if (album == "favorite") {
+                response = response.filter((e) => (e.ownerId === userId && e.favorite == true))
+            }
+            else {
+                response = response.filter((e) => (e.ownerId === userId))
+            }
             console.log("res in viewimage: ", response);
             return response
         }
@@ -58,6 +75,15 @@ function Image() {
         if (!userId) {
             navigate("/")
         }
+
+        getImageDtls(`http://${imageURL}`)
+            .then((res) => {
+                setImageDetails(res)
+            })
+            .catch(() => {
+
+            })
+
         fetchImage()
             .then((response) => {
                 response.map((e, i) => {
@@ -83,10 +109,13 @@ function Image() {
             })
     }, [imageURL])
 
+    let timeOutID=useRef(null)
+
     const handleShowPopup = (para) => {
         if (para == false) {
+            clearTimeout(timeOutID.current)
             setShowPopup(!showPopup)
-            setTimeout(() => {
+            timeOutID.current=setTimeout(() => {
                 setShowPopup(false)
             }, 4000)
         }
@@ -136,7 +165,10 @@ function Image() {
 
 
     return (
-        userId && <div onTouchStart={handleTouchStart}
+        userId && <div onClick={()=>{
+            clearTimeout(timeOutID.current)
+            setShowPopup(false)
+        }} onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd} className='bg-slate-900 pt-3'>
             <Link to="/home">
@@ -145,23 +177,54 @@ function Image() {
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
 
                 {
-                    prev != "" && <Link to={`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`}>
+                    prev != "" && <Link to={`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}?album=${album}`}>
                         <IoMdArrowDropleft className='text-white text-4xl sm:text-5xl absolute left-1 hidden md:block' />
                     </Link>
                 }
 
                 <div className='flex flex-col justify-center items-center h-screen'>
-                    <img className='w-64' onClick={() => handleShowPopup(showPopup)} src={`https://${imageURL}`} alt="Image" />
+                    <img className='w-64' onClick={(e) => {
+                        e.stopPropagation()
+                        handleShowPopup(showPopup)
+                    }} src={`https://${imageURL}`} alt="Image" />
                 </div>
 
                 {
-                    showPopup && <div className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-4 flex justify-center items-center'>
-                        <MdDeleteOutline onClick={deleteDocument} style={{ color: "white", fontSize: "2rem" }} />
+                    showPopup && <div onClick={(e)=>{e.stopPropagation()}} className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-4 flex justify-center gap-x-4 items-center'>
+                        <MdDeleteOutline className='hover:text-red-600 text-2xl text-white' onClick={deleteDocument} />
+                        {
+                            imageDetails.favorite ?
+                                <MdOutlineFavorite onClick={() => {
+                                    markedFav(`http://${imageURL}`)
+                                        .then((response) => {
+                                            console.log("response after markedfav: ", response);
+                                            return getImageDtls(`http://${imageURL}`)
+                                        })
+                                        .then((res) => {
+                                            console.log("response after getImageDtls: ", res);
+                                            // setImageDetails((state) => ({ ...state, favorite: false }))
+                                            setImageDetails(res)
+                                        })
+                                }} className='text-2xl text-red-500 hover:text-red-500' />
+                                :
+                                <MdOutlineFavorite onClick={() => {
+                                    markedFav(`http://${imageURL}`)
+                                        .then((response) => {
+                                            console.log("response after markedfav: ", response);
+                                            return getImageDtls(`http://${imageURL}`)
+                                        })
+                                        .then((res) => {
+                                            console.log("response after getImageDtls: ", res);
+                                            // setImageDetails((state) => ({ ...state, favorite: true }))
+                                            setImageDetails(res)
+                                        })
+                                }} className='text-2xl hover:text-red-500' />
+                        }
                     </div>
                 }
 
                 {
-                    next != "" && <Link to={`/home/image/${encodeURIComponent(next.slice(7, next.length))}`}>
+                    next != "" && <Link to={`/home/image/${encodeURIComponent(next.slice(7, next.length))}?album=${album}`}>
                         <IoMdArrowDropright className='text-white text-4xl sm:text-5xl absolute right-1 hidden md:block' />
                     </Link>
                 }
