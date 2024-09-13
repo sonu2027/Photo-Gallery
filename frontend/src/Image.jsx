@@ -148,13 +148,13 @@ function Image() {
             // Swipe Left
             setSwipeDirection("Left");
             if (next != "") {
-                navigate(`/home/image/${encodeURIComponent(next.slice(7, next.length))}`)
+                navigate(`/home/image/${encodeURIComponent(next.slice(7, next.length))}?album=${album}`)
             }
         } else if (diffX < -50) {
             // Swipe Right
             setSwipeDirection("Right");
             if (prev != "") {
-                navigate(`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}`)
+                navigate(`/home/image/${encodeURIComponent(prev.slice(7, prev.length))}?album=${album}`)
             }
         } else {
             setSwipeDirection(null); // No significant swipe
@@ -184,7 +184,7 @@ function Image() {
                 </div>
 
                 {
-                    showPopup && <div onClick={(e)=>{e.stopPropagation()}} className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-4 flex justify-center gap-x-4 items-center'>
+                    showPopup && <div onClick={(e) => { e.stopPropagation() }} className='w-64 md:w-72 lg:w-80 xl:w-96 bg-slate-900 text-white fixed h-10 bottom-4 flex justify-center gap-x-4 items-center'>
                         <MdDeleteOutline className='hover:text-red-600 text-2xl text-white' onClick={deleteDocument} />
                         {
                             imageDetails.favorite ?
