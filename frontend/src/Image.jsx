@@ -9,11 +9,11 @@ import { MdDeleteOutline } from "react-icons/md";
 import { TfiArrowLeft } from "react-icons/tfi";
 import { IoMdArrowDropleft } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
-import { useRef } from 'react';
 import { MdOutlineFavorite } from "react-icons/md";
 import { markedFav } from './databasecall/markedFav.js';
 import { getImageDtls } from './databasecall/getImageDtls.js';
 import { useLocation } from 'react-router';
+import { useRef } from 'react';
 
 function Image() {
     const location = useLocation()
@@ -33,6 +33,8 @@ function Image() {
     const [imageDetails, setImageDetails] = useState({})
 
     const navigate = useNavigate()
+
+    useRef
 
     const userId = useSelector((s) => s.auth.userData.userId)
 
@@ -109,13 +111,10 @@ function Image() {
             })
     }, [imageURL])
 
-    let timeOutID=useRef(null)
-
     const handleShowPopup = (para) => {
         if (para == false) {
-            clearTimeout(timeOutID.current)
             setShowPopup(!showPopup)
-            timeOutID.current=setTimeout(() => {
+            setTimeout(() => {
                 setShowPopup(false)
             }, 4000)
         }
@@ -162,13 +161,8 @@ function Image() {
         }
     };
 
-
-
     return (
-        userId && <div onClick={()=>{
-            clearTimeout(timeOutID.current)
-            setShowPopup(false)
-        }} onTouchStart={handleTouchStart}
+        userId && <div onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd} className='bg-slate-900 pt-3'>
             <Link to="/home">
