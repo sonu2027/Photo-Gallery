@@ -232,7 +232,7 @@ const sendemail = async (req, res) => {
     service: "Gmail",
     auth: {
       user: "sonu.mondal.2027@gmail.com",
-      pass:"smgo nllx mrrg vuki"
+      pass:"tfqi xoat rwpp knjf"
     },
   });
 
