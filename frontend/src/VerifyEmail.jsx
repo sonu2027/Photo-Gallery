@@ -19,7 +19,7 @@ function VerifyEmail({ email, formDatas, requesting, setGotVerifyEmail, setChang
         password,
     } = useDetailHook()
 
-    const [time, setTime] = useState(60)
+    const [time, setTime] = useState(20)
     const [inputOtp, setInputOtp] = useState("")
     const [realOtp, setRealOtp] = useState("1")
     const [otpSent, setOtpSent] = useState(false)
