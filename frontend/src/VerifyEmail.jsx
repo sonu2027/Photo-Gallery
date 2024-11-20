@@ -64,7 +64,7 @@ function VerifyEmail({ email, formDatas, requesting, setGotVerifyEmail, setChang
                 setGotoLogin(true)
                 clearInterval(timerId);
             }
-        }, 60000);
+        }, 20000);
     }, [])
 
     const registerUser = async () => {
